@@ -44,6 +44,23 @@ class InterviewBatch extends Model
                 ]);
             }
         });
+
+        // static::updated(function ($batch) {
+        //     // If batch is canceled
+        //     if ($batch->status === 'Canceled') {
+        //         // Update all related applications
+        //         $batch->applications()->update([
+        //             'status' => 'Applied', // rollback to applied
+        //         ]);
+        //     }
+
+        //     // Auto-close scheduled batch (existing code)
+        //     if ($batch->status === 'Scheduled' && now()->greaterThan($batch->interview_date->endOfDay())) {
+        //         $batch->updateQuietly([
+        //             'status' => 'Closed'
+        //         ]);
+        //     }
+        // });
     }
 
     /*
@@ -61,11 +78,40 @@ class InterviewBatch extends Model
         ->withTimestamps();
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Helper Methods (Optional but Recommended)
-    |--------------------------------------------------------------------------
-    */
+    public function assignIntern($applicationId)
+    {
+        // Prevent duplicate assignment
+        if ($this->applications()->where('application_id', $applicationId)->exists()) {
+            return;
+        }
+
+        // Attach intern to batch
+        $this->applications()->attach($applicationId);
+
+        // Update application status
+        $application = Application::find($applicationId);
+
+        if ($application) {
+            $application->status = 'interview_scheduled';
+            $application->save();
+        }
+
+        // Update batch capacity
+        $this->updateCapacityStatus();
+    }
+    
+    public function updateCapacityStatus()
+    {
+        $currentCount = $this->applications()->count();
+
+        if ($currentCount >= $this->batch_size) {
+            $this->status = 'full';
+        } else {
+            $this->status = 'open';
+        }
+
+        $this->save();
+    }
 
     public function isClosed(): bool
     {
@@ -77,6 +123,19 @@ class InterviewBatch extends Model
         return $this->status === 'Scheduled';
     }
 
+    // public function cancelBatch(): void
+    // {
+    //     // Update batch status
+    //     $this->update(['status' => 'Canceled']);
+
+    //     // Update related applications
+    //     foreach ($this->applications as $application) {
+    //         $application->update([
+    //             'status' => 'Applied' // or 'Canceled' if you want separate status
+    //         ]);
+    //     }
+    // }
+
     public function presentCount(): int
     {
         return $this->applications()->where('attendance', 'Present')->count();
@@ -86,4 +145,5 @@ class InterviewBatch extends Model
     {
         return $this->applications()->where('attendance', 'Absent')->count();
     }
+
 }

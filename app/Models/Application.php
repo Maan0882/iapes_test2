@@ -33,6 +33,23 @@ class Application extends Model
         return $this->hasOne(Attendance::class);
     }
 
+    public function evaluation()
+    {
+        return $this->hasOne(InterviewEvaluation::class);
+    }
+
+    // protected static function booted()
+    // {
+    //     static::updated(function ($application) {
+
+    //         if ($application->isDirty('status') &&
+    //             $application->status === 'interview_scheduled') {
+
+    //             // You can log or trigger notification here
+    //         }
+    //     });
+    // }
+
     /**
      * Optional: Casts
      */

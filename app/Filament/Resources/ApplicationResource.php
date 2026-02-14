@@ -22,6 +22,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Notifications\Notification;
 use Carbon\Carbon;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\IconColumn;
 //use Filament\Forms\Components\Select;
 
 
@@ -29,7 +30,10 @@ class ApplicationResource extends Resource
 {
     protected static ?string $model = Application::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Interview Management';
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Form $form): Form
     {
@@ -44,6 +48,12 @@ class ApplicationResource extends Resource
                     TextInput::make('degree')->disabled(),
                     TextInput::make('cgpa')->disabled(),
                     TextInput::make('domain')->disabled(),
+                    TextInput::make('skills')->disabled(),
+                    TextInput::make('resume_path')->label('Resume')
+                    ->disabled()
+                    ->formatStateUsing(fn ($state) => $state ? 'View Resume' : 'No Resume')
+                    ->url(fn ($record) => $record->resume_path ? asset('storage/' . $record->resume_path) : null)
+                    ->openUrlInNewTab(),
                 ])->columns(2),
 
                 Select::make('status')
@@ -60,7 +70,7 @@ class ApplicationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->poll('5s') // ⬅ auto refresh every 5 seconds
+            ->poll('3s') // ⬅ auto refresh every 3 seconds
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(function ($query) {
                 $query->with('interviewBatches');
@@ -73,9 +83,32 @@ class ApplicationResource extends Resource
                 TextColumn::make('email')
                     ->searchable(),
 
+                TextColumn::make('phone')
+                    ->searchable(),
+
+                TextColumn::make('college')
+                    ->searchable(),
+
+                TextColumn::make('degree')
+                    ->searchable(),
+                
+                TextColumn::make('cgpa')
+                    ->sortable(),
+
                 TextColumn::make('domain')
                     ->badge()
                     ->color('info'),
+                
+                IconColumn::make('resume_path')
+                    ->label('Resume')
+                    ->icon(fn ($state) => $state ? 'heroicon-o-eye' : 'heroicon-o-x-mark')
+                    ->color(fn ($state) => $state ? 'success' : 'danger')
+                    ->url(fn ($record) => $record->resume_path 
+                        ? asset('storage/' . $record->resume_path) 
+                        : null
+                    )
+                    ->openUrlInNewTab(),
+
 
                 TextColumn::make('status')
                     ->badge()
@@ -198,15 +231,37 @@ class ApplicationResource extends Resource
                                     'status' => 'interview_scheduled'
                                 ]);
 
-                                // \Mail::to($application->email)
-                                //     ->queue(new \App\Mail\InterviewScheduledMail($application, $batch));
+                                Mail::to($application->email)
+                                    ->send(new InterviewScheduledMail($batch, $application));
                             }
 
                             $startTime->addHour();
                         }
-                    })
-                    ->requiresConfirmation(),
+                       // ->requiresConfirmation(),
+                    }),
+                // Tables\Actions\Action::make('cancelBatch')
+                //     ->label('Cancel Batch')
+                //     ->color('danger')
+                //     ->icon('heroicon-o-x-circle')
+                //     ->requiresConfirmation()
+                //     ->action(function ($record, array $data) {
+                //         $status = $data['status_option']; // chosen by admin
+                //         $record->cancelBatch($status);
 
+                //         Notification::make()
+                //             ->title("Batch canceled and applications updated")
+                //             ->success()
+                //             ->send();
+                //     })
+                //     ->form([
+                //         Select::make('status_option')
+                //             ->label('Set applications status to')
+                //             ->options([
+                //                 'Applied' => 'Revert to Applied',
+                //                 'Canceled' => 'Mark as Canceled',
+                //             ])
+                //             ->required(),
+                // ]),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }

@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\DB;
 use App\Models\Application;
 
 class AttendanceStats extends BaseWidget
@@ -20,11 +21,15 @@ class AttendanceStats extends BaseWidget
             ),
 
             Stat::make('Present',
-                Application::where('attendance', 'Present')->count()
+                DB::table('interview_batch_intern')
+                    ->where('is_present', 1)
+                    ->count()
             )->color('success'),
 
             Stat::make('Absent',
-                Application::where('attendance', 'Absent')->count()
+                DB::table('interview_batch_intern')
+                    ->where('is_present', 0)
+                    ->count()
             )->color('danger'),
         ];
     }

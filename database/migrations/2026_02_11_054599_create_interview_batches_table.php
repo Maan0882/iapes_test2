@@ -19,11 +19,6 @@ return new class extends Migration
             $table->time('end_time');
             $table->integer('batch_size');
             $table->string('location')->nullable();
-            $table->enum('status', [
-                'open',
-                'full',
-                'completed'
-            ])->default('open');
             $table->timestamps();
         });
     }
