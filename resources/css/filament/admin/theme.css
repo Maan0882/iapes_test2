@@ -1,0 +1,154 @@
+@import "tailwindcss/preflight";
+
+@tailwind utilities;
+
+/* =========================
+   BASE HR COLOR SYSTEM
+========================= */
+
+:root {
+    --hr-primary: #2563eb;       /* Soft corporate blue */
+    --hr-success: #16a34a;       /* Hiring / selected */
+    --hr-warning: #f59e0b;       /* Pending */
+    --hr-danger:  #dc2626;       /* Rejected */
+    --hr-bg-soft: #f8fafc;       /* Soft background */
+}
+
+/* =========================
+   GLOBAL LOOK
+========================= */
+
+html {
+    font-size: 14px;
+}
+
+body {
+    background-color: var(--hr-bg-soft);
+    font-family: 'Inter', sans-serif;
+}
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.fi-page-header-heading {
+    font-size: 20px !important;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* =========================
+   CARDS — CLEAN HR STYLE
+========================= */
+
+.fi-section,
+.fi-card,
+.fi-stats-card {
+    border-radius: 18px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    background: white !important;
+}
+
+/* =========================
+   DASHBOARD STAT CARDS
+========================= */
+
+.fi-stats-card {
+    padding: 20px !important;
+    transition: all 0.2s ease;
+}
+
+.fi-stats-card:hover {
+    transform: translateY(-3px);
+}
+
+/* =========================
+   TABLE — CLEAN HR STYLE
+========================= */
+
+.fi-ta-table {
+    font-size: 13px;
+}
+
+.fi-ta-row {
+    height: 42px !important;
+    transition: background 0.2s ease;
+}
+
+.fi-ta-row:hover {
+    background-color: rgba(37, 99, 235, 0.06) !important;
+}
+
+.fi-ta-header-cell {
+    font-size: 12px !important;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+/* =========================
+   BADGES — HR STATUS STYLE
+========================= */
+
+.fi-badge {
+    font-size: 11px !important;
+    padding: 3px 10px !important;
+    border-radius: 999px !important;
+    font-weight: 500;
+}
+
+/* =========================
+   BUTTONS — SOFT STYLE
+========================= */
+
+.fi-btn-primary {
+    background-color: var(--hr-primary) !important;
+    border-radius: 10px !important;
+}
+
+.fi-btn {
+    font-size: 13px !important;
+    padding: 6px 12px !important;
+}
+
+/* =========================
+   INPUT FIELDS
+========================= */
+
+.fi-input {
+    border-radius: 10px !important;
+    font-size: 13px !important;
+}
+
+.fi-input:focus {
+    border-color: var(--hr-primary) !important;
+    box-shadow: 0 0 0 1px var(--hr-primary) !important;
+}
+
+/* =========================
+   SIDEBAR — HR CLEAN LOOK
+========================= */
+
+.fi-sidebar {
+    width: 240px !important;
+    background-color: white !important;
+    border-right: 1px solid #e5e7eb;
+}
+
+.fi-sidebar-item-label {
+    font-size: 13px !important;
+}
+
+.fi-sidebar-item-icon {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+/* =========================
+   TOPBAR — SOFT GLASS EFFECT
+========================= */
+
+.fi-topbar {
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-bottom: 1px solid #e5e7eb;
+}

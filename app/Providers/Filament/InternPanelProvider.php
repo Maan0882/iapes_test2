@@ -17,43 +17,32 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Intern\Widgets\InternWelcomeWidget;
 
-class AdminPanelProvider extends PanelProvider
+class InternPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
-            ->brandname('TechStrota')
-            ->brandLogo(asset('images/TsLogo.png'))
-            ->brandLogoHeight('10.5rem')
+            ->id('intern')
+            ->path('intern')
             ->login()
-
-         // ✅ COLLAPSIBLE SIDEBAR
-            ->sidebarCollapsibleOnDesktop()
-            ->sidebarWidth('16rem')
-            ->collapsedSidebarWidth('4.5rem')
-            
-             // ✅ FULL WIDTH CONTENT
-            ->maxContentWidth('full')
-            //->viteTheme('resources/css/filament/admin/theme.css')
-             // ✅ CUSTOM COLORS    
+            ->authGuard('intern')
             ->colors([
-                'primary' => Color::Purple,
+                'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverResources(in: app_path('Filament/Intern/Resources'), for: 'App\\Filament\\Intern\\Resources')
+            ->discoverPages(in: app_path('Filament/Intern/Pages'), for: 'App\\Filament\\Intern\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Intern/Widgets'), for: 'App\\Filament\\Intern\\Widgets')
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
-                // \App\Filament\Widgets\AttendanceStats::class,
-                // \App\Filament\Widgets\SelectionStats::class,    
+
+                // Your custom widget
+                InternWelcomeWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
