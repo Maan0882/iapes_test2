@@ -39,7 +39,7 @@ class Intern extends Authenticatable
         parent::boot();
 
         static::creating(function ($intern) {
-            $year = date('Y'); // Gets current year, e.g., 2026
+            $year = date('YY'); // Gets current year, e.g., 2026
             
             // Count how many interns were created this year to determine the next number
             $latestIntern = static::whereYear('created_at', $year)->count();
